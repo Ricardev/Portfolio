@@ -1,0 +1,413 @@
+import sqlite3
+
+conn = sqlite3.connect('fazenda.db')
+cursor = conn.cursor()
+
+--------------------------------------------------------------- criação da tabela e inserção de valores
+cursor.execute("""CREATE TABLE IF NOT EXISTS funcionarios (
+ID int primary key,
+nome varchar(30),
+CPF varchar(15),
+salario int,
+trabalho varchar(20)
+)""")
+
+funcionarios = [
+    ('1', 'Claudio Manoel', '044.028.070-30', '3000', 'ordenhador'),
+    ('2', 'Aaron Wagner', '042.018.870-20', '3250', 'semeador'),
+    ('3', 'Adalberta Couto', '083.781.750-14', '3800', 'horticultora'),
+    ('4', 'Camilla Cruz', '252.246.790-52', '3970', 'mecânica'),
+    ('5', 'Kel Oliveira', '462.843.200-78', '4100', 'carpinteira'),
+    ('6', 'Rodolfo Lurdão', '659.148.490-63', '2500', 'assistente cozinha'),
+    ('7', 'Celma Silva', '875.665.940-79', '7800', 'veterinária'),
+    ('8', 'Samus de Aristeia', '035.286.120-70', '2500', 'ordenhadora'),
+    ('9', 'Platão de Aristarco', '223.394.120-99', '3000', 'ordenhador'),
+    ('10', 'Macabéa Leite', '500.744.370-03', '4100', 'carpinteira'),
+    ('11', 'Machado de Oliveira', '931.284.430-09', '1800', 'pedreiro'),
+    ('12', 'Ricardo Ludwig', '469.272.940-66', '4100', 'carpinteiro'),
+    ('13', 'Karlos Coelho', '116.597.890-36', '7900', 'engenheiro químico'),
+    ('14', 'Ariano Ermes', '818.843.560-01', '3400', 'cozinheiro'),
+    ('15', 'Zelia Tenório', '675.203.860-07', '2400', 'jardineira'),
+    ('16', 'Pedro Paz', '806.516.330-01', '2400', 'jardineiro'),
+    ('17', 'Darkson dos Anjos', '422.396.680-40', '2500', 'assistente cozinha'),
+    ('18', 'Joana Cavalcanti', '533.033.780-10', '3000', 'ordenhadora'),
+    ('19', 'Elizabeth Lima', '400.682.170-05', '3800', 'horticultora'),
+    ('20', 'Lurdes Andrade', '046.552.840-64', '2900', 'cozinheira'),
+    ('21', 'Caio Betebas', '664.440.340-94', '7900', 'engenheiro florestal'),
+    ('22', 'Maurício Sousa', '723.973.680-64', '2500', 'assistente cozinha'),
+    ('23', 'Maurícia Sonsa', '550.941.930-07', '7800', 'gerente'),
+    ('24', 'Schubert Seixas', '965.222.800-19', '3400', 'cozinheiro'),
+    ('25', 'Macunaíma Brás', '351.636.360-65', '3970', 'mecânico'),
+    ('26', 'Bob Sweddiger', '857.836.490-23', '3250', 'semeador'),
+    ('27', 'Queli Qui', '774.824.050-70', '3000', 'ordenhadora')]
+cursor.executemany('INSERT INTO funcionarios VALUES (?,?,?,?,?)', funcionarios)
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS produçao_leite (
+ID_vaca int primary key,
+nome varchar(15),
+especie varchar(15),
+ordenhada DATETIME,
+temperatura_leite varchar(4),
+produtividade varchar(15),
+inseminada varchar(5),
+parto DATE,
+ruminaçao_dia TIME,
+secagem varchar(15)
+)""")
+
+leitinho = [
+    ('1', 'Jairo', 'Angus', 'NULL', '', 'pouco produtivo', 'Não', 'null', '06:00:00', ''),
+    ('2', 'Manuela', 'Nelore', '2020:11:06 06:40:00', '37ºC', 'muito produtivo', 'sim', '2020:11:06', '06:40:00',
+     'Intermitente'),
+    ('3', 'Peppa', 'Brangus', '2020:11:06 06:49:00', '38ºC', 'pouco produtivo', 'sim', '2020:12:12', '06:15:00',
+     'Intermitente'),
+    ('4', 'Patrícia', 'Devon', '2020:11:06 06:58:00', '38ºC', 'muito produtivo', 'sim', '2020:04:01', '06:23:00',
+     'Intermitente'),
+    ('5', 'Susana', 'Red Angus', 'null', '', 'pouco produtivo', 'Não', 'null', '06:18:00', ''),
+    ('6', 'Inara', 'Red poll', '2020:11:06 07:07:00', '39ºC', 'produtivo', 'Não', 'null', '05:00:00', ''),
+    ('7', 'Keka', 'Azul Belga', '2020:11:06 07:16:00', '38ºC', 'produtivo', 'Não', 'null', '04:47:00', ''),
+    ('8', 'Layla', 'Angus', '2020:12:06 07:25:00', '37ºC', 'muito produtivo', 'sim', '2020:06:06', '05:58:00',
+     'Intermitente'),
+    ('9', 'Bacon', 'Gelbvieh', 'null', '', 'pouco produtivo', 'sim', '2020:11:05', '05:45:00', 'Abrupta'),
+    ('10', 'Patinho', 'Angus', 'null', '', 'pouco produtivo', 'sim', '2020:01:08', '05:00:00', 'Intermitente'),
+    ('11', 'XTudo', 'Gelbvieh', '2020:12:06 07:34:00', '39ºC', 'muito produtivo', 'sim', '2020:11:15', '06:00:00',
+     'Abrupta'),
+    ('12', 'Elisangela', 'Simental', 'null', '', 'pouco produtivo', 'Não', 'null', '05:29:00', ''),
+    ('13', 'Solangela', 'Azul Belga', '2020:11:06 07:43:00', '38ºC', 'produtivo', 'sim', '2020:11:13', '05:11:00',
+     'Intermitente'),
+    ('14', 'Kátia', 'Nelore', '2020:11:06 07:52:00', '38ºC', 'muito produtivo', 'Não', 'null', '06:24:00', ''),
+    ('15', 'Pimpolha', 'Nelore', '2020:11:06 08:01:00', '38ºC', 'pouco produtivo', 'Não', 'null', '06:05:00', ''),
+    ('16', 'Mimosa', 'Nelore', 'null', '', 'pouco produtivo', 'Não', 'null', '06:50:00', ''),
+    ('17', 'Formosa', 'Red Angus', 'null', '', 'pouco produtivo', 'sim', '2020:09:18', '06:10:00', 'Intermitente'),
+    ('18', 'Joaquina', 'Brangus', '2020:11:06 08:10:00', '39ºC', 'muito produtivo', 'sim', '2020:10:14', '06:20:00',
+     'Abrupta'),
+    ('19', 'Josefa', 'Angus', '2020:11:06 08:19:00', '39ºC', 'muito produtivo', 'sim', '2020:10:01', '05:13:00',
+     'Abrupta'),
+    ('20', 'Gisleine', 'Brangus', '2020:11:06 08:28:00', '38ºC', 'muito produtivo', 'Não', 'null', '05:31:00', ''),
+    ('21', 'Grislaine', 'Brahman', 'null', '', 'pouco produtivo', 'Não', 'null', '05:57:00', ''),
+    ('22', 'Laka', 'Brahman', 'null', '', 'pouco produtivo', 'Não', 'null', '06:38:00', ''),
+    ('23', 'Nanica', 'Nelore', '2020:11:06 08:37:00', '37ºC', 'produtivo', 'sim', '2020:03:06', '06:43:00', 'Abrupta'),
+    ('24', 'Tânia', 'Red Poll', '2020:11:06 08:46:00', '37ºC', 'pouco produtivo', 'sim', '2020:05:22', '06:22:00',
+     'Intermitente'),
+    ('25', 'Nina', 'Red Angus', 'null', '', 'pouco produtivo', 'sim', '2020:07:17', '06:28:00', 'Abrupta')]
+cursor.executemany('INSERT INTO produçao_leite VALUES (?,?,?,?,?,?,?,?,?,?)', leitinho)
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS produçao(
+ID_produto int primary key,
+tipo varchar (25),
+estoque int,
+preço int
+)""")
+
+producao = ([
+    ('1', 'leite', '400', '7'),
+    ('2', 'queijo', '200', '28'),
+    ('3', 'fruta', '700', '12'),
+    ('4', 'peixe', '150', '37'),
+    ('5', 'pele de peixe', '70', '20'),
+    ('6', 'café', '600', '4'),
+    ('7', 'soja', '800', '12'),
+    ('8', 'milheto', '600', '5'),
+    ('9', 'carnes', '300', '50'),
+    ('10', 'ovos', '1000', '4'),
+    ('11', 'shitake', '350', '20'),
+    ('12', 'carneiro', '400', '47'),
+    ('13', 'cordeiro', '200', '58'),
+    ('14', 'mel', '750', '10'),
+    ('15', 'verduras', '970', '12')])
+cursor.executemany('INSERT INTO produçao VALUES (?,?,?,?)', producao)
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS equipamentos (
+ID_equipamento int primary key,
+nome varchar(15),
+tipo varchar(14)
+)""")
+
+equipamentos = [
+    ('1', 'trator', 'agrícola'),
+    ('2', 'adubo', 'agrícola'),
+    ('3', 'semeadora', 'agrícola'),
+    ('4', 'colhedora', 'agrícola'),
+    ('5', 'regador', 'agrícola'),
+    ('6', 'ordenhador', 'pecuária')]
+cursor.executemany('INSERT INTO equipamentos VALUES (?,?,?)', equipamentos)
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS varejistas (
+ID_varejista int primary key,
+nome varchar(20),
+data_compra DATE,
+quantidade_kg int
+)""")
+
+varejistas = [
+    ('1', 'Jorge Amado', '2020:06:14', '100'),
+    ('2', 'Vasconcelo Leite', '2020:06:17', '240'),
+    ('3', 'Bruno Miranda', '2020:06:21', '160'),
+    ('4', 'Leandro Martins', '2020:05:14', '180'),
+    ('5', 'Junior Mendonça', '2020:05:29', '230'),
+    ('6', 'Enzo Amoral', '2020:06:29', '260'),
+    ('7', 'Liebert Reis', '2020:06:22', '240'),
+    ('8', 'Marcos Aldabergue', '2020:06:23', '150'),
+    ('9', 'Renato Rakovnikov', '2020:06:07', '300')]
+cursor.executemany('INSERT INTO varejistas VALUES (?,?,?,?)', varejistas)
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS vendas(
+ID_venda int primary key,
+produtoID int NOT NULL,
+varejistaID int NOT NULL,
+FOREIGN KEY (produtoID) REFERENCES produçao(ID_produto),
+FOREIGN KEY (varejistaID) REFERENCES varejistas(ID_varejista)
+)""")
+vendas = [
+    ('1', '1', '8'),
+    ('2', '15', '7'),
+    ('3', '12', '5'),
+    ('4', '7', '4'),
+    ('5', '6', '5'),
+    ('6', '1', '1'),
+    ('7', '3', '2'),
+    ('8', '2', '3'),
+    ('9', '14', '9'),
+    ('10', '11', '5'),
+    ('11', '12', '1'),
+    ('12', '1', '6'),
+    ('13', '8', '8'),
+    ('14', '9', '4'),
+    ('15', '10', '9'),
+    ('16', '3', '4'),
+    ('17', '13', '7'),
+    ('18', '5', '5'),
+    ('19', '6', '4'),
+    ('20', '15', '7'),
+    ('21', '7', '1'),
+    ('22', '9', '1'),
+    ('23', '10', '8')]
+
+cursor.executemany('INSERT INTO vendas VALUES (?,?,?)', vendas)
+
+sql = """ CREATE TABLE vacinas (
+    ID_vacina int primary key,
+    VeterinarioID int,
+    VacaID int,
+    Foreign Key (VacaID) REFERENCES produçao_leite(ID_vaca),
+    Foreign Key (VeterinarioID) REFERENCES funcionarios(ID))"""
+
+
+vacinas = [
+    ('1', '7', '1'),
+    ('2', '7', '2'),
+    ('4', '7', '3'),
+    ('5', '7', '4'),
+    ('6', '7', '5'),
+    ('7', '7', '6'),
+    ('8', '7', '7'),
+    ('9', '28', '8'),
+    ('10', '28', '9'),
+    ('11', '28', '10'),
+    ('12', '28', '11'),
+    ('13', '28', '12'),
+    ('14', '28', '13'),
+    ('15', '28', '14'),
+    ('16', '28', '15'),
+]
+cursor.executemany('INSERT INTO vacinas VALUES (?, ?, ?)', vacinas)
+
+sql = """CREATE TABLE contatos_governo (
+        ID_contato int primary key,
+        Nome varchar(20),
+        Telefone int)
+        """
+cursor.execute(sql)
+
+contatos_governo = [
+    ('1', 'Marcelo Carioca', '999847617'),
+    ('2', 'Pedro Alfonsa', '988847617'),
+    ('3', 'Cristiane Fonseca', '999843298'),
+    ('4', 'Bárbara Beatriz', '988834606'),
+    ('5', 'Paulo José', '996026513'),
+    ('6', 'Júlio Neto', '999844531'),
+    ('7', 'Oswald Mário', '999886217'),
+    ('8', 'Ana Maria Cristina', '999927617'),
+    ('9', 'Carolina de Jesus', '999801417'),
+
+]
+cursor.executemany('INSERT INTO contatos_governo VALUES(?,?,?)', contatos_governo)
+
+sql = """CREATE TABLE projetos (
+        ID_projeto int primary key,
+        especificaçao TEXT,
+        data_limite DATE,
+        custo INT)"""
+
+cursor.execute(sql)
+
+projetos = [
+    ('1', 'construção de mais 5 galinheiros', '2020-12-21', '135000'),
+    ('2', 'construção de um curral para os cavalos', '2020-11-30', '45000'),
+    ('3', 'construção de uma estufa para o plantio de culturas', '2021-01-10', '30000'),
+
+]
+cursor.executemany('INSERT INTO projetos VALUES (?,?,?,?)', projetos)
+
+sql = """CREATE TABLE relaçao_projetos (
+        ID_relaçao int primary key,
+        projetoID int,
+        funcionarioID int,
+        Foreign key(projetoID) references projetos(ID_projeto),
+        Foreign key(funcionarioID) references funcionarios(ID)
+        )"""
+cursor.execute(sql)
+
+relacaoProjetos = [
+    ('1', '1', '5'),
+    ('2', '1', '10'),
+    ('3', '1', '23'),
+    ('4', '1', '25'),
+    ('5', '1', '4'),
+    ('6', '2', '4'),
+    ('7', '2', '12'),
+    ('8', '2', '11'),
+    ('9', '2', '7'),
+    ('10', '3', '16'),
+    ('11', '3', '11'),
+    ('12', '3', '3'),
+
+]
+
+cursor.executemany('INSERT INTO relaçao_projetos VALUES(?,?,?)', relacaoProjetos)
+
+
+sql = """CREATE TABLE pequenos_fazendeiros (
+        ID_fazendeiro INT PRIMARY KEY,
+        Nome varchar(20),
+        cultura varchar(15),
+        necessidade text)"""
+cursor.execute(sql)
+
+pequenos_fazendeiros = [
+    ('1', 'Antônio Pereira', 'batata', 'adubo para fertilização'),
+    ('2', 'Sebastião Lobo', 'mandioca', 'adubo para fertilização'),
+    ('3', 'Severino Filho', 'milho', 'ajuda para controle biológico de pragas'),
+    ('4', 'Riobaldo Neto', 'frutas', 'mais variedades de frutas por ter uma quantidade limitada'),
+    ('5', 'Zeca Bebelo', 'legumes', 'transporte através de trilhos para estragar menos'),
+    ('6', 'Hermógenes Silva', 'cereais', 'ajuda tecnológica para escolher melhores grãos'),
+    ('7', 'Joca Ramiro', 'queijo', 'transporte para conseguir vender em outros locais'),
+]
+cursor.executemany('INSERT INTO pequenos_fazendeiros VALUES (?,?,?,?)', pequenos_fazendeiros)
+
+
+sql = """CREATE TABLE grandes_fazendeiros (
+        fazendeiro_grande_ID int primary key,
+        nome varchar(20),
+        contato int
+)"""
+cursor.execute(sql)
+grandes_fazendeiros = [
+    ('1', 'Pedro Calazães', '999547658'),
+    ('2', 'Vila Lobos', '999235476'),
+    ('3', 'Frederick Hegel', '999093324'),
+    ('4', 'Ricardo dos Anjos', '999115470'),
+    ('5', 'Bernardo Gomes', '999784521'),
+]
+cursor.executemany('INSERT INTO grandes_fazendeiros VALUES (?,?,?)', grandes_fazendeiros)
+
+sql = """CREATE TABLE projeto_adoçao (
+            ID_adoçao int primary key,
+            IDfazendeiro_grande int,
+            IDfazendeiro_pequeno int,
+            IDcontato_governo int,
+            ajuda text,
+            Foreign key (IDfazendeiro_grande) references grandes_fazendeiros(fazendeiro_grande_ID),
+            Foreign key (IDfazendeiro_pequeno) references pequenos_fazendeiros(ID_fazendeiro),
+            Foreign key (IDcontato_governo) references contatos_governo(ID_contato)
+)"""
+cursor.execute(sql)
+
+projeto_adocao = [
+    ('1', '2', '3', '4', 'estudo das pragas que perturbam a fazenda para posterior ação'),
+    ('2', '3', '2', '5', 'adubo '),
+    ('3', '1', '1', '6', 'adubo '),
+    ('4', '4', '4', '7',
+     'doação de sementes de algumas frutas da própria fazenda para aumentar a variedade de cultura'),
+    ('5', '5', '6', '8', 'fornecimento de estudos e separação dos melhores grãos para melhorar a qualidade'),
+    ('6', '1', '7', '9', """análise da logística de transporte, talvez seja vantajoso integrar
+                                as fazendas com um trem e melhorar o transporte até os centros de consumo"""),
+    ('7', '3', '5', '1', """análise da logística de transporte, para um possível implante de trilhos,
+                                                                            fundindo projetos e benefícios"""),
+    ('8', '2', '3', '2', 'algumas outras variedades de cultura'),
+
+]
+cursor.executemany('INSERT INTO projeto_adoçao VALUES (?,?,?,?,?)', projeto_adocao)
+
+
+
+conn.commit()
+cursor.close()
+conn.close()
+-------------------------------------------------------------------------- fim da criação de tabelas e inserção de valores
+
+-------------------------------------------------------------------------- função de busca binária
+def binarySearch():
+    sql = 'SELECT ID_vaca FROM produçao_leite'
+    cursor.execute(sql)
+    result = (cursor.fetchall())
+    lista = [list(elements) for elements in result]
+    flattened = [val for sublist in lista for val in sublist]
+    first = 0
+    last = len(flattened) - 1
+    found = False
+    item = int(input('Digite o ID da vaca que deseja encontrar: '))
+    while first <= last and not found:
+        midpoint = (first + last)//2
+        if flattened[midpoint] == item:
+            found = True
+        else:
+            if item < flattened[midpoint]:
+                last = midpoint - 1
+            else:
+                first = midpoint + 1
+
+    cursor.close()
+    conn.close()
+    return print(found)
+binarySearch()
+-----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------- consultas
+df = pd.read_sql_query("""select varejistas.nome,varejistas.quantidade_kg, produçao.preço,produçao.tipo from varejistas
+join vendas on
+varejistas.ID_varejista = vendas.varejistaID
+join produçao on
+produçao.ID_produto = vendas.produtoID""", conn)
+print(df)
+
+
+sql = """select funcionarios.nome, produçao_leite.nome, produçao_leite.inseminada from funcionarios
+    join vacinas on
+    funcionarios.ID = vacinas.veterinarioID
+    join produçao_leite on
+    produçao_leite.ID_vaca = vacinas.vacaID"""
+df = pd.read_sql_query(sql, conn)
+print(df)
+
+
+sql = """ SELECT funcionarios.nome, projetos.especificaçao, projetos.data_limite FROM funcionarios
+            join relaçao_projetos on
+            funcionarios.ID = relaçao_projetos.funcionarioID
+            join projetos on
+            projetos.ID_projeto = relaçao_projetos.projetoID"""
+cursor.execute(sql)
+x = cursor.fetchall()
+print(x)
+
+
+sql = """SELECT grandes_fazendeiros.nome, pequenos_fazendeiros.Nome, pequenos_fazendeiros.necessidade,
+contatos_governo.nome, contatos_governo.Telefone FROM grandes_fazendeiros join projeto_adoçao on
+projeto_adoçao.IDfazendeiro_grande = grandes_fazendeiros.fazendeiro_grande_ID
+join pequenos_fazendeiros on
+projeto_adoçao.IDfazendeiro_pequeno = pequenos_fazendeiros.ID_fazendeiro
+join contatos_governo on
+projeto_adoçao.IDcontato_governo = contatos_governo.ID_contato"""
+cursor.execute(sql)
+x = cursor.fetchall()
+print(x)
